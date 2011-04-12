@@ -1,0 +1,9 @@
+Given an iTunes XML file, it will output the contents in some format amenable to
+the user.
+
+Currently, all it does is take all the song titles and write them to a text 
+file.
+
+This is good enough to use it to make something cool at wordle.com, but I'm
+hoping to add some more functionality soon, as noted in the comments in the 
+itunesparser.rb file.
