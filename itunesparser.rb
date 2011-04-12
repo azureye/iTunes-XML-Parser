@@ -11,7 +11,7 @@ def readFile infile
 		if /<key>Name<\/key><[a-z]*>(.*)<\/[a-z]*>/.match(line) != nil
 			temp = /<key>Name<\/key><[a-z]*>(.*)<\/[a-z]*>/.match(line)[1]
 			# hack: cleans input for my library, since half my music is ocremix
-			if temp.size > 8 && temp[-8..-1] = "OC Remix"
+			if (temp.size > 8) && (temp[-8..-1] == "OC ReMix")
 				temp = temp[0..-10]
 			end
 			bigArray << temp
