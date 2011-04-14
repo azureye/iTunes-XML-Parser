@@ -18,16 +18,15 @@ def timeCalc infile
 	return total
 end
 
-def readFile infile
+def readFile(infile,type)
 	# will contain all data we're interested in
 	bigArray = []
 	
-	# for each line, if there's a match to song name, put
-	# song in bigArray
+	# for each line, if there's a match to song name, put in bigArray
 	# if we reach playlists, then stop
 	File.readlines(infile).each do |line|
-		if /<key>Name<\/key><[a-z]*>(.*)<\/[a-z]*>/.match(line) != nil
-			temp = /<key>Name<\/key><[a-z]*>(.*)<\/[a-z]*>/.match(line)[1]
+		if /<key>#{Regexp.escape(type)}<\/key><[a-z]*>(.*)<\/[a-z]*>/.match(line) != nil
+			temp = /<key>#{Regexp.escape(type)}<\/key><[a-z]*>(.*)<\/[a-z]*>/.match(line)[1]
 			# hack: cleans input for my library, since half my music is ocremix
 			if (temp.size > 8) && (temp[-8..-1] == "OC ReMix")
 				temp = temp[0..-10]
@@ -61,35 +60,43 @@ def main
 		puts "Invalid file name!"
 		return
 	end
-	
-	# Currently only outputs list of song titles — will include
-	# this menu later
+
 	puts "Enter the appropriate number based on what you would like listed."
 	puts "(1) Song names"
-	# puts "(2) Artist names"
-	# puts "(3) Composer names"
-	# puts "(4) Album names"
-	# puts "(5) Genre names"
+	puts "(2) Artist names"
+	puts "(3) Composer names"
+	puts "(4) Album names"
+	puts "(5) Genre names"
 	puts "(6) Total listening time"
 
 	choice = STDIN.gets.chomp.to_i
 	
-	if choice == 1
-		puts "Please enter the name of the file you want results written to."
-		outfile = STDIN.gets.chomp.to_s
-		results = readFile infile
-		exportFile(results,outfile)
-	elsif choice == 6
+	if choice == 6
 		timeInSeconds = timeCalc infile
 		timeInMinutes = timeInSeconds / 60.0
 		timeInHours = timeInMinutes / 60.0
 		timeInDays = timeInHours / 24.0
 		puts "You have listened to #{timeInDays} days' worth of music"
-	elsif
-		puts choice
-		puts "fail"
+	else
+		if choice == 1
+			type = "Name"
+		elsif choice == 2
+			type = "Artist"
+		elsif choice == 3
+			type = "Composer"
+		elsif choice == 4
+			type = "Album"
+		elsif choice == 5
+			type = "Genre"
+		else
+			puts "Invalid choice!"
+			return
+		end
+		puts "Please enter the name of the file you want results written to."
+		outfile = STDIN.gets.chomp.to_s
+		results = readFile(infile,type)
+		exportFile(results,outfile)
 	end
-
 	return
 end
 

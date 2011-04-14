@@ -1,9 +1,12 @@
 Given an iTunes XML file, it will output the contents in some format amenable to
 the user.
 
-Currently, all it does is take all the song titles and write them to a text 
-file.
+In particular, it can list all the song names, all the artists, all the 
+composers, all the album names, and all the genre names in a user's library.
 
-This is good enough to use it to make something cool at wordle.net, but I'm
-hoping to add some more functionality soon, as noted in the comments in the 
-itunesparser.rb file.
+The script lists each item as many times as it appears in the iTunes library
+(meaning, it does not remove redundancies), which is useful if you want to make 
+something cool out of your library at worlde.net ;)
+
+Additionally, you can choose to have it tell you your total "listening time" 
+based on the length and play count for each song.
