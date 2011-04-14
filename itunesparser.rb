@@ -1,4 +1,22 @@
-# usage: ruby itunesparser.rb infile outfile
+# usage: ruby itunesparser.rb infile
+
+def timeCalc infile
+	total = 0.0
+	tempTime = 0.0
+	tempPlayCount = 0.0
+	File.readlines(infile).each do |line|
+		if /<key>Total Time<\/key><[a-z]*>(.*)<\/[a-z]*>/.match(line) != nil
+			tempTime = /<key>Total Time<\/key><[a-z]*>(.*)<\/[a-z]*>/.match(line)[1].to_f
+			tempTime = tempTime / 1000.0
+		elsif /<key>Play Count<\/key><[a-z]*>(.*)<\/[a-z]*>/.match(line) != nil
+			tempPlayCount = /<key>Play Count<\/key><[a-z]*>(.*)<\/[a-z]*>/.match(line)[1].to_f
+			total = total + (tempTime * tempPlayCount)
+		elsif /<key>Playlists<\/key>/.match(line) != nil
+			return total
+		end
+	end
+	return total
+end
 
 def readFile infile
 	# will contain all data we're interested in
@@ -32,12 +50,11 @@ def exportFile(results,outfile)
 end
 
 def main
-	if ARGV[0] == nil || ARGV[1] == nil
-		puts "Usage: ruby itunesparser.rb infile outfile"
+	if ARGV[0] == nil
+		puts "Usage: ruby itunesparser.rb infile"
 		return
 	else
 		infile = ARGV[0]
-		outfile = ARGV[1]
 	end
 	
 	if File.exists?(infile) == false
@@ -47,17 +64,31 @@ def main
 	
 	# Currently only outputs list of song titles — will include
 	# this menu later
-	# puts "Enter the appropriate number based on what you would like listed."
-	# puts "(1) Song names"
+	puts "Enter the appropriate number based on what you would like listed."
+	puts "(1) Song names"
 	# puts "(2) Artist names"
 	# puts "(3) Composer names"
 	# puts "(4) Album names"
 	# puts "(5) Genre names"
-	# puts "(6) Total listening time"
+	puts "(6) Total listening time"
+
+	choice = STDIN.gets.chomp.to_i
 	
-	results = readFile infile
-	
-	exportFile(results,outfile)
+	if choice == 1
+		puts "Please enter the name of the file you want results written to."
+		outfile = STDIN.gets.chomp.to_s
+		results = readFile infile
+		exportFile(results,outfile)
+	elsif choice == 6
+		timeInSeconds = timeCalc infile
+		timeInMinutes = timeInSeconds / 60.0
+		timeInHours = timeInMinutes / 60.0
+		timeInDays = timeInHours / 24.0
+		puts "You have listened to #{timeInDays} days' worth of music"
+	elsif
+		puts choice
+		puts "fail"
+	end
 
 	return
 end
